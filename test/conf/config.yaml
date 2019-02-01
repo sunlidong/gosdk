@@ -1,0 +1,201 @@
+name: "default-network"
+
+description: "The network description"
+
+version: 1.0.0
+
+client:
+
+  organization: Org1 #组织 name
+
+  logging:
+    level: info
+
+  cryptoconfig:
+    path: /home/boss/go-workspace/src/sdktest/test/conf/crypto-config 
+
+  credentialStore:
+    path: /tmp/default-network-store
+
+  BCCSP:
+    security:
+     enabled: true
+     default:
+       provider: "SW"
+     hashAlgorithm: "SHA2"
+     softVerify: true
+     level: 256
+     pin: "somepin"
+     label: "ForFabric"
+     library: "add BCCSP library here"
+
+channels:
+  # name of the channel
+ drctongdao: 
+    orderers:
+      - orderer.example.com
+    peers:
+      peer0.org1.example.com:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+
+      peer1.org1.example.com:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+
+      peer0.org2.example.com:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+
+      peer1.org2.example.com:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+
+    policies:
+      queryChannelConfig:
+        minResponses: 1
+        maxTargets: 1
+        retryOpts:
+          attempts: 5
+          initialBackoff: 500ms
+          maxBackoff: 5s
+          backoffFactor: 2.0
+
+organizations:
+  org1:
+    mspid: Org1MSP
+    cryptoPath: /home/stu/workspace/src/origins/conf/crypto-config/peerOrganizations/ofgj.itcast.cn/users/{userName}@ofgj.itcast.cn/msp
+    peers:
+      - peer0.org1.example.com
+
+    # [Optional]. Certificate Authorities issue certificates for identification purposes in a Fabric based
+    # network. Typically certificates provisioning is done in a separate process outside of the
+    # runtime network. Fabric-CA is a special certificate authority that provides a REST APIs for
+    # dynamic certificate management (enroll, revoke, re-enroll). The following section is only for
+    # Fabric-CA servers.
+  Org1:
+    # configtx.yaml organizations -> ID
+    mspid: Org1MSP
+
+    cryptoPath: /home/boss/go-workspace/src/sdktest/test/conf/crypto-config/peerOrganizations/org1.example.com/users/{userName}@org1.example.com/msp
+
+    peers:
+    - peer0.org1.example.com
+    - peer1.org1.example.com
+
+  Org2:
+    # configtx.yaml organizations -> ID
+    mspid: Org2MSP
+    cryptoPath: /home/boss/go-workspace/src/sdktest/test/conf/crypto-config/peerOrganizations/org2.example.com/users/{userName}@org2.example.com/msp
+    peers:
+    - peer0.org2.example.com
+    - peer1.org2.example.com
+
+  OrdererOrg:
+    mspID: OrdererMSP
+    cryptoPath: /home/boss/go-workspace/src/sdktest/test/conf/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp
+
+orderers:
+  orderer.example.com:
+    url: grpcs://orderer.example.com:7050
+    grpcOptions:
+      ssl-target-name-override: orderer.example.com
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: false
+
+    tlsCACerts:
+      path: /home/boss/go-workspace/src/sdktest/test/conf/crypto-config/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
+
+peers:
+#  _default:
+# '_default' peer can contain common configuration between all config peers to avoid repetitive config entries inside each peer config element.
+  peer0.org1.example.com:
+    # this URL is used to send endorsement and query requests
+    url: grpcs://peer0.org1.example.com:7051
+
+    grpcOptions:
+      ssl-target-name-override: peer0.org1.example.com
+      will be taken into consideration if address has no protocol defined, if true then grpc or else grpcs
+      allow-insecure: false
+
+    tlsCACerts:
+      path: path/to/tls/cert/for/peer0/org1
+#  peer0.org1.example.com:
+    # this URL is used to send endorsement and query requests
+#    url: grpcs://peer0.org1.example.com:7051
+
+#    grpcOptions:
+#      ssl-target-name-override: peer0.org1.example.com
+#      will be taken into consideration if address has no protocol defined, if true then grpc or else grpcs
+#      allow-insecure: false
+
+#    tlsCACerts:
+      # Certificate location absolute path
+peer0.org1.example.com:
+    url: grpc://localhost:7051
+    eventUrl: localhost:7053
+    grpcOptions:
+      ssl-target-name-override: peer0.org1.example.com
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: false
+
+    tlsCACerts:
+      path: /home/boss/go-workspace/src/sdktest/test/conf/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
+
+  peer1.org1.example.com:
+    url: grpc://localhost:8051
+    eventUrl: localhost:7053
+    grpcOptions:
+      ssl-target-name-override: peer1.org1.example.com
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: false
+
+    tlsCACerts:
+      path: /home/boss/go-workspace/src/sdktest/test/conf/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
+peer0.org2.example.com:
+    url: grpc://localhost:9051
+    eventUrl: localhost:7053
+    grpcOptions:
+      ssl-target-name-override: peer0.org2.example.com
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: false
+
+    tlsCACerts:
+      path: /home/boss/go-workspace/src/sdktest/test/conf/crypto-config/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem
+
+
+
+  peer0.org2.example.com:
+    url: grpc://localhost:1051
+    eventUrl: localhost:7054
+    grpcOptions:
+      ssl-target-name-override: peer0.org2.example.com
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: false
+
+    tlsCACerts:
+      path: /home/boss/go-workspace/src/sdktest/test/conf/crypto-config/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem
+     
